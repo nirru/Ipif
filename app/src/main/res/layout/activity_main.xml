@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="HOME"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerInside"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/title"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ipif"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <RelativeLayout
+                    android:id="@+id/top_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/white"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/l3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="75dp"
+                        android:layout_marginTop="25dp"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/img_send_gift"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:src="@drawable/send_gift"/>
+
+                        <TextView
+                            android:id="@+id/txt_send_gift"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ec1d25"
+                            android:text="Send Gift"
+                            android:textStyle="bold"
+                            style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/bottom_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/white">
+
+                    <LinearLayout
+                        android:id="@+id/l2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="75dp"
+                        android:layout_marginBottom="25dp"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/img_account"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:src="@drawable/account"/>
+
+                        <TextView
+                            android:id="@+id/txt_account"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#ec1d25"
+                            android:text="Account"
+                            android:textStyle="bold"
+                            style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|right"
+                    android:background="@drawable/ic_triangle_left"/>
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/redeem_gift_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_triangle_right"
+                        android:layout_marginRight="100dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/l1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|right"
+                        android:paddingLeft="30dp"
+                        android:layout_centerVertical="true"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/img_redeem_gift_img"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/redeem_gift"/>
+
+                        <TextView
+                            android:id="@+id/txt_gift"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Redeem Gift"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </FrameLayout>
+
+
+        </FrameLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

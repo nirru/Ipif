@@ -1,0 +1,126 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.oxilo.ipif.fragment.ProductInfo">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:id="@+id/rl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:scaleType="centerInside"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:src="@drawable/ipif"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="Received Gift"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fm"
+        android:layout_width="match_parent"
+        android:layout_height="256dp"
+        android:layout_below="@+id/rl_toolbar">
+
+        <android.support.v4.view.ViewPager
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </android.support.v4.view.ViewPager>
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:numStars="5"
+            android:rating="3.5"
+            android:stepSize="0.5"
+            android:layout_gravity="bottom|right"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/l1"
+        android:layout_below="@+id/fm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Elegant White Dress"
+            android:layout_marginLeft="10dp"
+            style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="$670"
+            android:layout_marginRight="10dp"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/colorPrimary"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top|left"
+        android:padding="10dp"
+        android:text="This dress is awesome"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_below="@+id/l1"
+        android:layout_above="@+id/send_gift"/>
+
+    <TextView
+        android:id="@+id/send_gift"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="Send Gift"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        style="@style/Base.TextAppearance.AppCompat.Menu"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"/>
+
+
+
+</RelativeLayout>

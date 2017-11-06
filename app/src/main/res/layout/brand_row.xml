@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="120dp"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <ImageView
+            android:id="@+id/brand_image"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:src="@drawable/food"
+            android:scaleType="fitXY"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="5dp"/>
+
+        <TextView
+            android:id="@+id/brand_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/rating"
+            android:paddingRight="5dp"
+            android:layout_marginLeft="10dp"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_toRightOf="@+id/brand_image"
+            android:layout_alignTop="@+id/brand_image"
+            android:textColor="@color/colorPrimary"
+            android:text="The Noodle"/>
+
+        <TextView
+            android:id="@+id/brand_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:layout_toLeftOf="@+id/rating"
+            android:layout_toRightOf="@+id/brand_image"
+            android:paddingRight="2dp"
+            android:layout_marginLeft="10dp"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_below="@+id/brand_title"
+            android:textColor="#6F6F6F"
+            android:text="Lorium Ispum is Simply"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menu"
+            android:layout_marginRight="10dp"
+            android:paddingTop="15dp"
+            android:layout_toRightOf="@+id/brand_image">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_info_outline_white_18dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="Drinks"
+                android:textColor="#A5A5A5"/>
+
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="0dp"
+                android:background="#A5A5A5"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Fire Food"
+                android:textColor="#A5A5A5"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/location_blank"
+                android:layout_marginLeft="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textNoSuggestions"
+                android:layout_marginLeft="5dp"
+                android:text="118 Picaddily"
+                android:textColor="#A5A5A5"/>
+        </LinearLayout>
+
+
+        <RatingBar
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/RatingBar"
+            android:layout_marginRight="5dp"
+            android:stepSize="0.5"
+            android:numStars="5"
+            android:layout_alignParentRight="true"
+            android:rating="4"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"
+            android:layout_alignTop="@+id/brand_image"/>
+
+        <LinearLayout
+            android:id="@+id/menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:minHeight="30dp"
+            android:layout_alignLeft="@+id/rating"
+            android:layout_alignRight="@+id/rating"
+            android:background="@drawable/rounded_grey_btn"
+            android:layout_below="@+id/rating">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:text="Menu"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/ic_keyboard_arrow_right_gray_24dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
