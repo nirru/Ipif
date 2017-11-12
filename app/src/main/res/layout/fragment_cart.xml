@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/cart_items_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <RelativeLayout
+        android:id="@+id/shipping_price"
+        android:layout_below="@+id/cart_items_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/rectangle_shadow">
+
+        <RelativeLayout
+            android:id="@+id/sh_relative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tv_shipping_handiling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SHIPPING AND HANDLING"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_centerVertical="true"/>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@drawable/rectangle_red_border"
+                android:text="FREE SHIPPING"
+                android:textColor="@color/red"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"/>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/v1"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/grey"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_below="@+id/sh_relative"/>
+
+
+        <RelativeLayout
+            android:id="@+id/ot_relative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:layout_below="@+id/v1">
+
+            <TextView
+                android:id="@+id/tv_order_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ORDER TOTAL"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_centerVertical="true"/>
+
+            <Button
+                android:id="@+id/dollar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="$ 327"
+                android:background="@color/white"
+                android:textColor="@color/red"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textSize="17sp"/>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/circle_arrow"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/shipping_price"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Proceed"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:background="@color/red"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:textAlignment="center"
+        android:padding="10dp"/>
+
+</RelativeLayout>

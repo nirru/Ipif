@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You can send your text messsages, pictures and videos"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Message"
+        android:layout_below="@+id/heading"
+        android:layout_margin="20dp"
+        android:background="@drawable/rectangle_redborder_round"
+        android:padding="15dp"/>
+
+    <EditText
+        android:id="@+id/send_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Send Photo/Video"
+        android:layout_below="@+id/message"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/rectangle_redborder_round"
+        android:padding="15dp"/>
+
+    <TextView
+        android:id="@+id/btn_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:layout_below="@+id/send_video"
+        android:layout_margin="20dp"
+        android:textAlignment="center"
+        android:background="@drawable/rounded_red_btn"
+        android:padding="15dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"/>
+
+</RelativeLayout>
