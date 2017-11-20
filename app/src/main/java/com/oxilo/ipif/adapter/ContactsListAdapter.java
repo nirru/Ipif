@@ -13,30 +13,30 @@ import android.widget.TextView;
 
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.modal.Cart;
-import com.oxilo.ipif.modal.Category;
-
-import org.w3c.dom.Text;
+import com.oxilo.ipif.modal.Contacts;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
- * Created by Harshita on 11/9/2017.
+ * Created by Harshita on 11/19/2017.
  */
 
-public class CartListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class ContactsListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
     private Context mContext;
     public List<T> dataSet;
-    private static MyClickListener myClickListener;
+    private static CartListAdapter.MyClickListener myClickListener;
     private int inflated_row;
 
-    public CartListAdapter(int inflated_row, List<T> productLists, Context mContext) {
+    public ContactsListAdapter(int inflated_row, List<T> productLists, Context mContext) {
         this.mContext = mContext;
         this.dataSet = productLists;
         this.inflated_row = inflated_row;
     }
-    public void setOnItemClickListener(MyClickListener myClickListener) {
+    public void setOnItemClickListener(CartListAdapter.MyClickListener myClickListener) {
         this.myClickListener = myClickListener;
     }
 
@@ -106,12 +106,12 @@ public class CartListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.ViewH
             View itemView = LayoutInflater.
                     from(parent.getContext()).
                     inflate(inflated_row, parent, false);
-            vh = new EventViewHolder(itemView);
+            vh = new ContactsListAdapter.EventViewHolder(itemView);
         }
         else if(viewType == VIEW_PROG){
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.progress_item, parent, false);
-            vh = new ProgressViewHolder(v);
+            vh = new CartListAdapter.ProgressViewHolder(v);
         }else {
             throw new IllegalStateException("Invalid type, this type ot items " + viewType + " can't be handled");
         }
@@ -121,16 +121,15 @@ public class CartListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        if(holder instanceof EventViewHolder){
+        if(holder instanceof ContactsListAdapter.EventViewHolder){
             final T dataItem = dataSet.get(position);
 
-           ((EventViewHolder) holder).item_type.setText(((Cart)dataItem).getItem_type());
-            ((EventViewHolder) holder).size.setText(((Cart)dataItem).getSize());
-            ((EventViewHolder) holder).count.setText(((Cart)dataItem).getCount());
-            ((EventViewHolder) holder).cost.setText(((Cart)dataItem).getCost());
-            ((EventViewHolder) holder).dummy_image.setImageResource(((Cart)dataItem).getDrawable_id());
+            ((ContactsListAdapter.EventViewHolder) holder).username.setText(((Contacts)dataItem).getUsername());
+            ((ContactsListAdapter.EventViewHolder) holder).phone.setText(((Contacts)dataItem).getPhone());
+            ((ContactsListAdapter.EventViewHolder) holder).profile_img.setImageResource(((Contacts)dataItem).getId());
+
         }else{
-            ((ProgressViewHolder)holder).progressBar.setIndeterminate(true);
+            ((CartListAdapter.ProgressViewHolder)holder).progressBar.setIndeterminate(true);
         }
     }
 
@@ -153,15 +152,14 @@ public class CartListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.ViewH
     // you provide access to all the views for a data item in a view holder
     public static class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public TextView item_type,size,count,cost;
-        public ImageView dummy_image;
+        public TextView username,phone;
+        public CircleImageView profile_img;
+
         public EventViewHolder(View v) {
             super(v);
-            item_type = (TextView)v.findViewById(R.id.item_type);
-            size = (TextView)v.findViewById(R.id.size);
-            count = (TextView)v.findViewById(R.id.count);
-            cost = (TextView)v.findViewById(R.id.cost);
-            dummy_image = (ImageView)v.findViewById(R.id.dummy_image);
+            username = (TextView)v.findViewById(R.id.username);
+            phone = (TextView)v.findViewById(R.id.phone);
+            profile_img = (CircleImageView) v.findViewById(R.id.profile_img);
             v.setOnClickListener(this);
         }
 

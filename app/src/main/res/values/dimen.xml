@@ -12,4 +12,9 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="toolbar_height">150dp</dimen>
+
+    <dimen name="divider">0.5dp</dimen>
+    <dimen name="divider_left_margin">10dp</dimen>
+    <dimen name="divider_right_margin">10dp</dimen>
+    <dimen name="zero_margin">0dp</dimen>
 </resources>
