@@ -14,19 +14,21 @@ import com.oxilo.ipif.fragment.ContactsFragment;
  * Created by Harshita on 11/18/2017.
  */
 
-public class TryActivity extends AppCompatActivity implements ContactsFragment.OnFragmentInteractionListener,CartFragment.OnFragmentInteractionListener{
+public class TryActivity extends AppCompatActivity
+//        implements ContactsFragment.OnFragmentInteractionListener,CartFragment.OnFragmentInteractionListener
+{
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.try_layout);
+        setContentView(R.layout.seenow_layout);
 
-        CartFragment fragment = CartFragment.newInstance("","");
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().add(R.id.frame_layout,fragment).commit();
+//        CartFragment fragment = CartFragment.newInstance("","");
+//        FragmentManager manager = getSupportFragmentManager();
+//        manager.beginTransaction().add(R.id.frame_layout,fragment).commit();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
+//    @Override
+//    public void onFragmentInteraction(Uri uri) {
+//
+//    }
 }

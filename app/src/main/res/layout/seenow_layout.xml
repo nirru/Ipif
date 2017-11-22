@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/thumbsuo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/thumbs_up"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Your Gift has been sent to"
+        android:textColor="@color/white"
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:textAlignment="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="your friend"
+        android:textColor="@color/white"
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:textAlignment="center"/>
+
+
+    <TextView
+        android:id="@+id/donate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        style="@style/Base.TextAppearance.AppCompat.Small"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="30dp"
+        android:text="Donate: If you use this site regularly and would"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        style="@style/Base.TextAppearance.AppCompat.Small"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:text="like to help keep the site on the Internet"/>
+
+    <TextView
+        android:id="@+id/see_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_grey_btn"
+        android:text="SEE NOW"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:textSize="16sp"
+        android:textColor="@color/red"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"/>
+
+    <TextView
+        android:id="@+id/no_thanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Thanks"
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        style="@style/Base.TextAppearance.AppCompat.Large"/>
+
+</LinearLayout>

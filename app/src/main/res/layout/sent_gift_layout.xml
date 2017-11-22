@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/ll_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Order No"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            />
+        <TextView
+            android:id="@+id/order_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3448956255"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/ll_order"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/circle_arrow"
+            />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+
+            <TextView
+                android:id="@+id/gift_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Black Raspberry Crunch"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/sent_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sent to:"
+                android:textColor="@color/red"
+                android:layout_below="@+id/gift_name"
+                android:gravity="center_vertical"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/sent_to"
+                android:text="David Smith"
+                android:textColor="@color/red"
+                android:gravity="center_vertical"
+                android:layout_below="@+id/gift_name"
+                android:layout_marginLeft="10dp"
+                android:textSize="14sp"/>
+
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               android:layout_below="@+id/sent_to">
+
+               <TextView
+                   android:id="@+id/date"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="25"
+                   android:textSize="14sp"/>
+
+               <TextView
+                   android:id="@+id/th"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="th"
+                   android:textSize="14sp"/>
+
+               <TextView
+                   android:id="@+id/month"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Jun"
+                   android:layout_marginLeft="5dp"
+                   android:textSize="14sp"/>
+
+               <TextView
+                   android:id="@+id/year"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="2017"
+                   android:layout_marginLeft="5dp"
+                   android:textSize="14sp"/>
+
+               <TextView
+                   android:id="@+id/time"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="05:04"
+                   android:layout_marginLeft="5dp"
+                   style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+               <TextView
+                   android:id="@+id/am_pm"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="PM"
+                   android:layout_marginLeft="5dp"
+                   android:textSize="14sp"/>
+
+           </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message:"
+        android:layout_below="@+id/details"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:textColor="@color/red"/>
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_message"
+        android:layout_marginTop="20dp"
+        android:text="happy birthday!!!"
+        android:textSize="14sp"
+        />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/message"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/img_lover"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/circle_arrow"
+        android:layout_below="@+id/image"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>

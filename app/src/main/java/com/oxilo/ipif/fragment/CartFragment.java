@@ -138,9 +138,8 @@ public class CartFragment extends Fragment {
     private void showDialog(){
         Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_one);
+        dialog.setContentView(R.layout.dialog_two);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
         dialog.show();
     }
 

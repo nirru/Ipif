@@ -44,4 +44,5 @@
 
     <color name="grey">#ff7c7b7b</color>
     <color name="light_grey">#ffd6d3d3</color>
+    <color name="very_light_grey">#FFE4E0E0</color>
 </resources>
