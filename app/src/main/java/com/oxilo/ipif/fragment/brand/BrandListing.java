@@ -1,4 +1,4 @@
-package com.oxilo.ipif.fragment;
+package com.oxilo.ipif.fragment.brand;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,22 +7,39 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oxilo.ipif.AppConstant;
 import com.oxilo.ipif.R;
-import com.oxilo.ipif.adapter.BrandListAdapter;
-import com.oxilo.ipif.adapter.CategoryListAdapter;
-import com.oxilo.ipif.modal.Service;
+import com.oxilo.ipif.adapter.brand.AllListAdapter;
+import com.oxilo.ipif.adapter.brand.BrandListAdapter;
+import com.oxilo.ipif.fragment.MenuFragment;
+import com.oxilo.ipif.modal.Brand;
+import com.oxilo.ipif.modal.BrandList;
+import com.oxilo.ipif.network.api.ServiceFactory;
+import com.oxilo.ipif.network.api.WebService;
+import com.oxilo.ipif.util.EndlessRecyclerOnScrollListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +49,7 @@ import butterknife.Unbinder;
  * Use the {@link BrandListing#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BrandListing extends Fragment {
+public class BrandListing extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,6 +57,8 @@ public class BrandListing extends Fragment {
     @BindView(R.id.recylerview)
     RecyclerView recylerview;
     Unbinder unbinder;
+    @BindView(R.id.swipe_container)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1,mParam2;
@@ -125,6 +144,11 @@ public class BrandListing extends Fragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onRefresh() {
+        loadAllFromApi();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -141,27 +165,103 @@ public class BrandListing extends Fragment {
     }
 
     private void initClassRefrence() {
-        brandListAdapter = new BrandListAdapter(R.layout.brand_row, loadDummy(),getContext());
-        LinearLayoutManager li1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
+        brandListAdapter = new BrandListAdapter(R.layout.brand_row, loadDummy(), getContext());
+        LinearLayoutManager li1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         li1.setSmoothScrollbarEnabled(true);
         recylerview.setLayoutManager(li1);
         recylerview.setAdapter(brandListAdapter);
 
+
+        recylerview.addOnScrollListener(new EndlessRecyclerOnScrollListener(li1) {
+            @Override
+            public void onLoadMore(int current_page) {
+                recylerview.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        brandListAdapter.addItem(null);
+                    }
+                });
+                loadAllFromApi();
+            }
+        });
+
         brandListAdapter.setOnItemClickListener(new BrandListAdapter.MyClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-
-                startFragment(MenuFragment.newInstance("",""));
+                startFragment(MenuFragment.newInstance("", ""));
             }
         });
+
+        // SwipeRefreshLayout
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
+//        /**
+//         * Showing Swipe Refresh animation on activity create
+//         * As animation won't start on onCreate, post runnable is used
+//         */
+//        mSwipeRefreshLayout.post(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                mSwipeRefreshLayout.setRefreshing(true);
+//                // Fetching data from server
+//                if (allListAdapter!=null){
+//                    allListAdapter.clearItem();
+//                    allListAdapter.notifyDataSetChanged();
+//                }
+//                loadAllFromApi();
+//            }
+//        });
+
     }
 
-    private ArrayList<String> loadDummy(){
-        ArrayList<String>services = new ArrayList<>();
-        for (int i = 0; i<12;i++){
-            services.add("A");
+    private ArrayList<BrandList> loadDummy() {
+        ArrayList<BrandList> services = new ArrayList<>();
+        try {
+            JSONObject mapping = new JSONObject(AppConstant.BRAND);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            services = mapper.readValue(mapping.getString("brand_data"), new TypeReference<List<BrandList>>() {
+            });
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return services;
+    }
+
+    private void loadAllFromApi() {
+        try {
+            WebService webService = ServiceFactory.createRetrofitService(WebService.class);
+            webService.getBrand("brands")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Brand>() {
+                        @Override
+                        public void accept(@NonNull Brand brand) throws Exception {
+                            for (BrandList brandList : brand.getBrandData()) {
+                                brandListAdapter.addItem(brandList);
+                            }
+                            if (brandListAdapter.dataSet.size() > 0) {
+                                brandListAdapter.removeItem(brandListAdapter.dataSet.size() - 1);
+                            }
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                            throwable.printStackTrace();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void startFragment(Fragment fragment) {

@@ -15,6 +15,7 @@ import com.oxilo.ipif.R;
 import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.CategoryPagerAdapter;
 import com.oxilo.ipif.modal.Category;
+import com.oxilo.ipif.modal.products.BrandCategoryList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,13 +132,13 @@ public class MyAccountFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private ArrayList<Category> loadDummyCategory(){
-        ArrayList<Category> categories = new ArrayList<>();
-        Category category1 = new Category();
-        Category categor2 = new Category();
+    private ArrayList<BrandCategoryList> loadDummyCategory(){
+        ArrayList<BrandCategoryList> categories = new ArrayList<>();
+        BrandCategoryList category1 = new BrandCategoryList();
+        BrandCategoryList categor2 = new BrandCategoryList();
 
-        category1.setTitle("Send Gift");
-        categor2.setTitle("Received Gift");
+        category1.setName("Send Gift");
+        categor2.setName("Received Gift");
 
         categories.add(category1);
         categories.add(categor2);

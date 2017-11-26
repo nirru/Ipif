@@ -1,15 +1,85 @@
 package com.oxilo.ipif.modal;
-
 import java.util.ArrayList;
 import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-/**
- * Created by nikk on 24/7/17.
- */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "success",
+        "status",
+        "category_data"
+})
+public class Category implements Parcelable
+{
 
-public class Category {
+    @JsonProperty("success")
+    private Integer success;
+    @JsonProperty("status")
+    private Integer status;
+    @JsonProperty("category_data")
+    private ArrayList<Service> categoryData = new ArrayList<>();
     private String title;
-    private List<Service> service = new ArrayList<>();
+    public final static Parcelable.Creator<Category> CREATOR = new Creator<Category>() {
+
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public Category createFromParcel(Parcel in) {
+            return new Category(in);
+        }
+
+        public Category[] newArray(int size) {
+            return (new Category[size]);
+        }
+
+    }
+            ;
+
+    protected Category(Parcel in) {
+        this.success = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        in.readList(this.categoryData, (Service.class.getClassLoader()));
+        this.title = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public Category() {
+    }
+
+    @JsonProperty("success")
+    public Integer getSuccess() {
+        return success;
+    }
+
+    @JsonProperty("success")
+    public void setSuccess(Integer success) {
+        this.success = success;
+    }
+
+    @JsonProperty("status")
+    public Integer getStatus() {
+        return status;
+    }
+
+    @JsonProperty("status")
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    @JsonProperty("category_data")
+    public ArrayList<Service> getCategoryData() {
+        return categoryData;
+    }
+
+    @JsonProperty("category_data")
+    public void setCategoryData(ArrayList<Service> categoryData) {
+        this.categoryData = categoryData;
+    }
 
     public String getTitle() {
         return title;
@@ -19,11 +89,15 @@ public class Category {
         this.title = title;
     }
 
-    public List<Service> getService() {
-        return service;
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(success);
+        dest.writeValue(status);
+        dest.writeList(categoryData);
+        dest.writeValue(title);
     }
 
-    public void setService(List<Service> service) {
-        this.service = service;
+    public int describeContents() {
+        return 0;
     }
+
 }

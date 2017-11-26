@@ -5,21 +5,47 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oxilo.ipif.BaseDrawerActivity;
+import com.oxilo.ipif.NavigationController;
 import com.oxilo.ipif.R;
-import com.oxilo.ipif.adapter.CategoryListAdapter;
+import com.oxilo.ipif.adapter.brand.CategoryListAdapter;
+import com.oxilo.ipif.adapter.brand.ProductListAdapter;
+import com.oxilo.ipif.modal.Brand;
+import com.oxilo.ipif.modal.BrandList;
 import com.oxilo.ipif.modal.Service;
+import com.oxilo.ipif.modal.products.BrandCategoryList;
+import com.oxilo.ipif.modal.products.ProductListings;
+import com.oxilo.ipif.modal.products.Products;
+import com.oxilo.ipif.network.api.ServiceFactory;
+import com.oxilo.ipif.network.api.WebService;
+import com.oxilo.ipif.util.EndlessRecyclerOnScrollListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,8 +67,9 @@ public class ProductListing extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1,mParam2;
 
-    private CategoryListAdapter serviceListAdapter;
+    private ProductListAdapter productListAdapter;
     private OnFragmentInteractionListener mListener;
+    private ArrayList<ProductListings>productListings;
 
 
     public ProductListing() {
@@ -83,6 +110,7 @@ public class ProductListing extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_category_list, container, false);
         unbinder = ButterKnife.bind(this, view);
+        productListings = new ArrayList<>();
         return view;
     }
 
@@ -90,6 +118,7 @@ public class ProductListing extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClassRefrence();
+        loadAllFromApi(mParam1);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -138,16 +167,22 @@ public class ProductListing extends Fragment {
     }
 
     private void initClassRefrence() {
-        serviceListAdapter = new CategoryListAdapter(R.layout.category_row, loadDummy(),getContext());
+        productListAdapter = new ProductListAdapter(R.layout.category_row, productListings,getContext());
         LinearLayoutManager li1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
         li1.setSmoothScrollbarEnabled(true);
         recylerview.setLayoutManager(li1);
-        recylerview.setAdapter(serviceListAdapter);
+        recylerview.setAdapter(productListAdapter);
 
-        serviceListAdapter.setOnItemClickListener(new CategoryListAdapter.MyClickListener() {
+
+
+        productListAdapter.setOnItemClickListener(new ProductListAdapter.MyClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-
+                ProductListings productListings = (ProductListings) productListAdapter.dataSet.get(position);
+                String id = productListings.getId();
+//                ProductInfo productInfo = ProductInfo.newInstance(id,"");
+                NavigationController navigationController = new NavigationController((BaseDrawerActivity) getActivity());
+                navigationController.navigateToProductInfo(id);
             }
         });
     }
@@ -162,4 +197,48 @@ public class ProductListing extends Fragment {
         return services;
     }
 
+    private void loadAllFromApi(String category_id) {
+        try {
+            WebService webService = ServiceFactory.createRetrofitService(WebService.class);
+            webService.get_products_list(category_id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Response<ResponseBody>>() {
+                        @Override
+                        public void accept(@NonNull Response<ResponseBody> responseBodyResponse) throws Exception {
+
+                            try {
+                                String sd = new String(responseBodyResponse.body().bytes());
+                                JSONObject mapping = new JSONObject(sd);
+                                ObjectMapper mapper = new ObjectMapper();
+                                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                                ArrayList<ProductListings>productListingses = mapper.readValue(mapping.getString("product_data"), new TypeReference<List<ProductListings>>() {
+                                });
+//
+                                Log.e("SIZE==",""+ productListingses.size());
+                                for (ProductListings productListings : productListingses) {
+                                    productListAdapter.addItem(productListings);
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_content, fragment);
+        fragmentTransaction.addToBackStack(null);/**Enable this in fragment call not in activity*/
+        fragmentTransaction.commit();
+    }
 }

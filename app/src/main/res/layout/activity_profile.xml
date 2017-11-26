@@ -1,55 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/bg">
+<LinearLayout android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:background="@drawable/bg"
+android:orientation="vertical"
+android:layout_gravity="center"
+android:gravity="center|top"
+xmlns:android="http://schemas.android.com/apk/res/android">
+
+<RelativeLayout
+    android:id="@+id/rl_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <LinearLayout
-        android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp">
+        android:layout_centerInParent="true"
+        android:gravity="center">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ipif_icon"/>
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerInside"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:src="@drawable/ipif"/>
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
             android:text="Profile"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"/>
-
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            style="@style/Base.TextAppearance.AppCompat.Medium"/>
 
 
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Done"
+        android:layout_marginRight="5dp"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp">
+        android:textColor="@android:color/white"
+        android:layout_centerVertical="true"
+        android:drawableLeft="@drawable/checked"
+        android:drawablePadding="10dp"
+        style="@style/Base.TextAppearance.AppCompat.Medium"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/checked"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Done"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_marginLeft="10sp"
-            android:layout_marginRight="10sp"/>
 
-    </LinearLayout>
+</RelativeLayout>
+
+
 
     <RelativeLayout
         android:id="@+id/relative_basicinfo"
@@ -115,4 +132,5 @@
         android:layout_marginRight="20dp"
         android:paddingLeft="10dp"/>
 
-</RelativeLayout>
+
+</LinearLayout>

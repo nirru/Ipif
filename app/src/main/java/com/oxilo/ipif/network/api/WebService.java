@@ -1,0 +1,61 @@
+package com.oxilo.ipif.network.api;
+
+import com.oxilo.ipif.modal.Brand;
+import com.oxilo.ipif.modal.Category;
+import com.oxilo.ipif.modal.products.BrandCategory;
+import com.oxilo.ipif.modal.products.Products;
+
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+
+/**
+ * Created by ericbasendra on 10/06/16.
+ */
+public interface WebService {
+
+    @GET("ipif/index.php/api/get_categories_list")
+    io.reactivex.Observable<Category> getCategory();
+
+//    @FormUrlEncoded
+//    @POST("wing/api.php")
+//    io.reactivex.Observable<Response<ResponseBody>> signUpAPI(
+//            @Field("fname") String fname,
+//            @Field("lname") String lname,
+//            @Field("email") String email,
+//            @Field("password") String password);
+
+    @GET("ipif/index.php/api/get_brands_list")
+    io.reactivex.Observable<Brand> getAllProduct(
+            @Query("tag") String popular);
+
+    @GET("ipif/index.php/api/get_brands_list")
+    io.reactivex.Observable<Brand> getBrand(
+            @Query("tag") String brand);
+
+    @GET("ipif/index.php/api/get_brands_list")
+    io.reactivex.Observable<Brand> getBrandsByLocations(
+            @Query("tag") String location,
+            @Query("latitude") String latitude,
+            @Query("longitude") String longitude,
+            @Query("miles") String miles);
+
+    @GET("ipif/index.php/api/get_categories_by_brand_id")
+    io.reactivex.Observable<Response<ResponseBody>> getCategoriesByBrandId(
+            @Query("brand_id") String brand_id);
+
+    @GET("ipif/index.php/api/get_products_list")
+    io.reactivex.Observable<Response<ResponseBody>> get_products_list(
+            @Query("category_id") String category_id);
+
+    @GET("ipif/index.php/api/get_products_detail")
+    io.reactivex.Observable<Response<ResponseBody>> get_products_detail(
+            @Query("product_id") String product_id);
+
+
+
+}

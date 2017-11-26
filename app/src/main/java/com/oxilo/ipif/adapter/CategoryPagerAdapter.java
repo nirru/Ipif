@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 import com.oxilo.ipif.modal.Category;
+import com.oxilo.ipif.modal.products.BrandCategoryList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class CategoryPagerAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> myFragments;
     private Context context;
     int oldPosition = -1;
-    private ArrayList<Category> customCollectionArrayList;
-    public CategoryPagerAdapter(Context context, FragmentManager fm, List<Fragment> myFrags, ArrayList<Category>customCollectionArrayList) {
+    private ArrayList<BrandCategoryList> customCollectionArrayList;
+    public CategoryPagerAdapter(Context context, FragmentManager fm, List<Fragment> myFrags, ArrayList<BrandCategoryList>customCollectionArrayList) {
         super(fm);
         this.myFragments = myFrags;
         this.context = context;
@@ -63,7 +64,7 @@ public class CategoryPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
 
         setPos(position);
-        return customCollectionArrayList.get(position).getTitle();
+        return customCollectionArrayList.get(position).getName();
     }
 
     @Override

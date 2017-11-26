@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.modal.Cart;
-import com.oxilo.ipif.modal.Contacts;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ir.mirrajabi.rxcontacts.Contact;
 
 /**
  * Created by Harshita on 11/19/2017.
@@ -124,9 +124,12 @@ public class ContactsListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.V
         if(holder instanceof ContactsListAdapter.EventViewHolder){
             final T dataItem = dataSet.get(position);
 
-            ((ContactsListAdapter.EventViewHolder) holder).username.setText(((Contacts)dataItem).getUsername());
-            ((ContactsListAdapter.EventViewHolder) holder).phone.setText(((Contacts)dataItem).getPhone());
-            ((ContactsListAdapter.EventViewHolder) holder).profile_img.setImageResource(((Contacts)dataItem).getId());
+            ((ContactsListAdapter.EventViewHolder) holder).username.setText(((Contact)dataItem).getDisplayName());
+            ((ContactsListAdapter.EventViewHolder) holder).phone.setText("" + ((Contact)dataItem).getPhoneNumbers());
+            if (((Contact)dataItem).getThumbnail()!=null)
+            ((ContactsListAdapter.EventViewHolder) holder).profile_img.setImageURI(((Contact)dataItem).getThumbnail());
+            else
+                ((ContactsListAdapter.EventViewHolder) holder).profile_img.setImageResource(R.drawable.app_icon);
 
         }else{
             ((CartListAdapter.ProgressViewHolder)holder).progressBar.setIndeterminate(true);

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@drawable/background"
+    android:background="@drawable/login_background"
     tools:context="com.oxilo.ipif.SignUpActivity">
 
     <LinearLayout
@@ -38,39 +38,30 @@
 
 
 
-    <EditText
-        android:id="@+id/user_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:imeOptions="actionNext"
-        android:hint="Email"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textColorHint="@android:color/white"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"/>
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_contentColor="@android:color/white"/>
 
-
-    <EditText
-        android:id="@+id/user_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:imeOptions="actionNext"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textColorHint="@android:color/white"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="@dimen/activity_vertical_margin"
-        android:layout_marginRight="@dimen/activity_vertical_margin"/>
+        <EditText
+            android:id="@+id/editText_carrierNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColor="@android:color/white"
+            android:editable="false"
+            android:hint="phone"
+            android:inputType="phone"
+            android:singleLine="true" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -79,6 +70,7 @@
             android:layout_marginRight="35dp"
             android:layout_marginTop="20dp"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:gravity="center">
 
             <com.oxilo.ipif.util.SmoothCheckBox
@@ -117,15 +109,16 @@
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:minWidth="145dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimary"
         android:text="Sign In"
-        android:background="@drawable/rounded_corner_btn"/>
+        android:background="@drawable/rounded_grey_btn"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:visibility="gone"
             android:layout_gravity="center">
 
             <TextView

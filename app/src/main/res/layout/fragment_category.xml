@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.oxilo.ipif.fragment.CategoryFragment">
+    tools:context="com.oxilo.ipif.fragment.brand.CategoryFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -37,13 +37,19 @@
         android:layout_marginLeft="16dp"
         style="@style/Base.TextAppearance.AppCompat.Medium"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recylerview"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recylerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

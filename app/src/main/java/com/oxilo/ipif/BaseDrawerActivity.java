@@ -98,7 +98,8 @@ public class BaseDrawerActivity extends BaseActivity implements NavigationView.O
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startFragment(ItemFragment.newInstance("",""));
+                   NavigationController navigationController = new NavigationController(BaseDrawerActivity.this);
+                    navigationController.navigateToItems();
                 }
             }, 300);
 

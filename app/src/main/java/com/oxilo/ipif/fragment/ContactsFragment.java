@@ -19,8 +19,17 @@ import com.oxilo.ipif.modal.Contacts;
 import com.oxilo.ipif.util.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+import ir.mirrajabi.rxcontacts.Contact;
+import ir.mirrajabi.rxcontacts.RxContacts;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +50,8 @@ public class ContactsFragment extends Fragment {
     private String mParam2;
     ContactsListAdapter contactsListAdapter;
     RecyclerView recyler_view;
+
+    ArrayList<Contact> contactList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -112,10 +123,12 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClassRefrence();
+        getContacts();
     }
 
     private void initClassRefrence() {
-        contactsListAdapter = new ContactsListAdapter(R.layout.contacts_row,loadDummyCart(),getContext());
+        contactList = new ArrayList<>();
+                contactsListAdapter = new ContactsListAdapter(R.layout.contacts_row,contactList,getContext());
         LinearLayoutManager ll1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
         ll1.setSmoothScrollbarEnabled(true);
         recyler_view.setLayoutManager(ll1);
@@ -135,21 +148,53 @@ public class ContactsFragment extends Fragment {
         });
     }
 
-    private ArrayList<Contacts> loadDummyCart(){
-        ArrayList<Contacts>cart = new ArrayList<>();
+//    private ArrayList<Contacts> loadDummyCart(){
+//        ArrayList<Contacts>cart = new ArrayList<>();
+//
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+//
+//        return cart;
+//    }
 
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
+    private void getContacts(){
+        RxContacts.fetch(getActivity())
+                .filter(new Predicate<Contact>() {
+                    @Override
+                    public boolean test(@NonNull Contact m) throws Exception {
+                        return m.getInVisibleGroup() == 1;
+                    }
+                })
+                .toSortedList(new Comparator<Contact>() {
+                    @Override
+                    public int compare(Contact contact, Contact other) {
+                        return contact.compareTo(other);
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Contact>>() {
+                    @Override
+                    public void accept(@NonNull List<Contact> contacts) throws Exception {
+                        for (Contact contact:contacts) {
+                            contactsListAdapter.addItem(contact);
+                        }
 
-        return cart;
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     /**

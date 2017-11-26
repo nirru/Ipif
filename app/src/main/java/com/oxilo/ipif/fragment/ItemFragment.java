@@ -15,7 +15,12 @@ import android.view.ViewGroup;
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.CategoryPagerAdapter;
+import com.oxilo.ipif.fragment.brand.AllFragment;
+import com.oxilo.ipif.fragment.brand.BrandListing;
+import com.oxilo.ipif.fragment.brand.CategoryFragment;
+import com.oxilo.ipif.fragment.brand.LocationListing;
 import com.oxilo.ipif.modal.Category;
+import com.oxilo.ipif.modal.products.BrandCategoryList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +161,7 @@ public class ItemFragment extends Fragment {
         page.putString("url", "d");
         for (int i = 0; i < 4; i++) {
             if (i == 0) {
-                BrandListing brandListing = BrandListing.newInstance("", "");
+                AllFragment brandListing = AllFragment.newInstance("", "");
                 fragments.add(i, brandListing);
             }
             if (i == 1) {
@@ -168,7 +173,7 @@ public class ItemFragment extends Fragment {
                 fragments.add(i, brandListing);
             }
             if (i == 3) {
-                BrandListing brandListing = BrandListing.newInstance("", "");
+                LocationListing brandListing = LocationListing.newInstance("", "");
                 fragments.add(i, brandListing);
             }
 
@@ -180,18 +185,17 @@ public class ItemFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private ArrayList<Category> loadDummyCategory() {
-        ArrayList<Category> categories = new ArrayList<>();
-        Category category1 = new Category();
-        Category categor2 = new Category();
-        Category categor3 = new Category();
-        Category categor4 = new Category();
-        Category categor5 = new Category();
+    private ArrayList<BrandCategoryList> loadDummyCategory() {
+        ArrayList<BrandCategoryList> categories = new ArrayList<>();
+        BrandCategoryList category1 = new BrandCategoryList();
+        BrandCategoryList categor2 = new BrandCategoryList();
+        BrandCategoryList categor3 = new BrandCategoryList();
+        BrandCategoryList categor4 = new BrandCategoryList();
 
-        category1.setTitle("All");
-        categor2.setTitle("Category");
-        categor3.setTitle("Brand");
-        categor4.setTitle("Location");
+        category1.setName("All");
+        categor2.setName("Category");
+        categor3.setName("Brand");
+        categor4.setName("Location");
 
         categories.add(category1);
         categories.add(categor2);

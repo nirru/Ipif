@@ -79,7 +79,7 @@
             android:minWidth="145dp"
             android:layout_alignParentRight="true"
             android:text="More Info"
-            android:textColor="@color/blue_text_color"
+            android:textColor="@android:color/darker_gray"
             android:background="@drawable/rounded_white_btn"
             android:layout_margin="10dp"
             android:layout_below="@+id/cat_image"/>

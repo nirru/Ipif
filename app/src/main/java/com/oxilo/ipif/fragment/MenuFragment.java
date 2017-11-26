@@ -8,14 +8,26 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.CategoryPagerAdapter;
+import com.oxilo.ipif.modal.Brand;
+import com.oxilo.ipif.modal.BrandList;
 import com.oxilo.ipif.modal.Category;
+import com.oxilo.ipif.modal.products.BrandCategory;
+import com.oxilo.ipif.modal.products.BrandCategoryList;
+import com.oxilo.ipif.network.api.ServiceFactory;
+import com.oxilo.ipif.network.api.WebService;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +36,12 @@ import java.util.Vector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,7 +64,7 @@ public class MenuFragment extends Fragment {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     // TODO: Rename and change types of parameters
-    private String mParam2, mParam1;
+    private String cat_id, mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,7 +94,7 @@ public class MenuFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            cat_id = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -93,7 +111,7 @@ public class MenuFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initPager();
+        loadCategoryFromApi();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -150,20 +168,55 @@ public class MenuFragment extends Fragment {
     }
 
 
-    private void initPager() {
+    private void initPager(ArrayList<BrandCategoryList> brandCategory) {
         final List<Fragment> fragments = new Vector<Fragment>();
         final Bundle page = new Bundle();
         page.putString("url", "d");
-        for (int i = 0; i < 5; i++) {
-            ProductListing productListing = ProductListing.newInstance("", "");
+        for (int i = 0; i < brandCategory.size(); i++) {
+            ProductListing productListing = ProductListing.newInstance(brandCategory.get(i).getId(), "");
             fragments.add(i, productListing);
-
         }
-        CategoryPagerAdapter servicesPagerAdapter = new CategoryPagerAdapter(getActivity(), ((MenuFragment.this)).getChildFragmentManager(), fragments, loadDummyCategory());
+        CategoryPagerAdapter servicesPagerAdapter = new CategoryPagerAdapter(getActivity(), ((MenuFragment.this)).getChildFragmentManager(), fragments, brandCategory);
         viewPager.setAdapter(servicesPagerAdapter);
         int limit = (servicesPagerAdapter.getCount() > 1 ? servicesPagerAdapter.getCount() - 1 : 1);
         viewPager.setOffscreenPageLimit(limit);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void loadCategoryFromApi() {
+        try {
+            WebService webService = ServiceFactory.createRetrofitService(WebService.class);
+            webService.getCategoriesByBrandId(cat_id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Response<ResponseBody>>() {
+                        @Override
+                        public void accept(@NonNull Response<ResponseBody> responseBodyResponse) throws Exception {
+
+                            try {
+                                String sd = new String(responseBodyResponse.body().bytes());
+                                JSONObject mapping = new JSONObject(sd);
+                                ObjectMapper mapper = new ObjectMapper();
+                                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                                ArrayList<BrandCategoryList>brandCategoryLists = mapper.readValue(mapping.getString("brand_categorys"), new TypeReference<List<BrandCategoryList>>() {
+                                });
+//
+                                Log.e("SIZE==",""+ brandCategoryLists.size());
+                                initPager(brandCategoryLists);
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+                            throwable.printStackTrace();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private ArrayList<Category> loadDummyCategory() {

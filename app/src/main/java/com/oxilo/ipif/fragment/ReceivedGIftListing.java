@@ -16,9 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.oxilo.ipif.R;
-import com.oxilo.ipif.adapter.CategoryListAdapter;
 import com.oxilo.ipif.adapter.ReceivedGiftListAdapter;
-import com.oxilo.ipif.adapter.SendGiftListAdapter;
 import com.oxilo.ipif.modal.Service;
 
 import java.util.ArrayList;

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.oxilo.ipif.fragment.BrandListing;
+import com.oxilo.ipif.fragment.brand.BrandListing;
 
 public class BrandActivity extends BaseDrawerActivity implements BrandListing.OnFragmentInteractionListener {
     @Override

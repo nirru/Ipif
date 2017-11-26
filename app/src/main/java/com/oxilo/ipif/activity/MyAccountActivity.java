@@ -4,13 +4,12 @@ import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.oxilo.ipif.BaseDrawerActivity;
+import com.oxilo.ipif.NavigationController;
 import com.oxilo.ipif.R;
-import com.oxilo.ipif.fragment.BrandListing;
-import com.oxilo.ipif.fragment.CategoryFragment;
+import com.oxilo.ipif.fragment.brand.BrandListing;
 import com.oxilo.ipif.fragment.ItemFragment;
 import com.oxilo.ipif.fragment.MenuFragment;
 import com.oxilo.ipif.fragment.MyAccountFragment;
@@ -26,17 +25,12 @@ public class MyAccountActivity extends BaseDrawerActivity implements SendGIftLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_account);
 
-        if (savedInstanceState==null)
-            startFragment(MyAccountFragment.newInstance("",""));
+        if (savedInstanceState==null){
+            NavigationController navigationController = new NavigationController(MyAccountActivity.this);
+            navigationController.navigateToMyAccount();
+        }
     }
 
-    public void startFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_content, fragment);
-//        fragmentTransaction.addToBackStack(null);/**Enable this in fragment call not in activity*/
-        fragmentTransaction.commit();
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {

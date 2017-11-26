@@ -1,4 +1,4 @@
-package com.oxilo.ipif.adapter;
+package com.oxilo.ipif.adapter.brand;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,20 +7,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.oxilo.ipif.R;
-import com.oxilo.ipif.modal.Service;
+import com.oxilo.ipif.modal.BrandList;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
 
 
 /**
  * Created by ericbasendra on 02/12/15.
  */
-public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class LocationListAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
     private Context mContext;
@@ -29,7 +31,7 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
     private int inflated_row;
     TextView price;
 
-    public CategoryListAdapter(int inflated_row, List<T> productLists, Context mContext) {
+    public LocationListAdapter(int inflated_row, List<T> productLists, Context mContext) {
         this.mContext = mContext;
         this.dataSet = productLists;
         this.inflated_row = inflated_row;
@@ -149,7 +151,29 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if(holder instanceof EventViewHolder){
             final T dataItem = dataSet.get(position);
-//       ((EventViewHolder) holder).service_name.setText(((Service)dataItem).getTitle());
+            ((EventViewHolder) holder).brand_title.setText(((BrandList)dataItem).getName());
+            String img_url = ((BrandList)dataItem).getImageUrl();
+            if (!img_url.equalsIgnoreCase(""))
+                Picasso.with(mContext).load(img_url).placeholder(R.drawable.logo)// Place holder image from drawable folder
+                        .error(R.drawable.logo).fit().centerInside()
+                        .into(((EventViewHolder) holder).brand_image);
+
+            if (!((BrandList)dataItem).getDistance().equals("")){
+                ((EventViewHolder) holder).distance.setText(((BrandList)dataItem).getDistance());
+                ((EventViewHolder) holder).distance.setVisibility(View.VISIBLE);
+            }else{
+                ((EventViewHolder) holder).distance.setVisibility(View.GONE);
+            }
+
+            if (!((BrandList)dataItem).getRating().equals("")){
+                float rating = Float.parseFloat(((BrandList)dataItem).getRating());
+                ((EventViewHolder) holder).ratingBar.setRating(rating);
+                ((EventViewHolder) holder).ratingBar.setVisibility(View.VISIBLE);
+            }else{
+                ((EventViewHolder) holder).ratingBar.setVisibility(View.GONE);
+            }
+
+
         }else{
             ((ProgressViewHolder)holder).progressBar.setIndeterminate(true);
         }
@@ -174,10 +198,16 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
     // you provide access to all the views for a data item in a view holder
     public static class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public TextView service_name;
+        public TextView brand_title;
+        public TextView distance;
+        public ImageView brand_image;
+        public RatingBar ratingBar;
         public EventViewHolder(View v) {
             super(v);
-           service_name = (TextView) v.findViewById(R.id.header);
+            brand_title = (TextView) v.findViewById(R.id.brand_title);
+            brand_image = (ImageView)v.findViewById(R.id.brand_image);
+            distance = (TextView) v.findViewById(R.id.distance);
+            ratingBar = (RatingBar)v.findViewById(R.id.rating);
             v.setOnClickListener(this);
         }
 
