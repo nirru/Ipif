@@ -1,0 +1,102 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="true"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/dialog_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_prfile_picture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Profile Pictures"
+            android:textAlignment="center"
+            android:textColor="@color/dark_grey"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_setPP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
+            android:text="Set profile picture"
+            android:textAlignment="center"
+            android:textSize="13sp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_prfile_picture" />
+
+        <View
+            android:id="@+id/v1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/background_grey"
+            app:layout_constraintTop_toBottomOf="@+id/tv_setPP" />
+
+        <TextView
+            android:id="@+id/camera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Camera"
+            android:textAlignment="center"
+            android:textColor="@color/red"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/v1" />
+
+        <View
+            android:id="@+id/v2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/background_grey"
+            app:layout_constraintTop_toBottomOf="@+id/camera" />
+
+        <TextView
+            android:id="@+id/photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Photos"
+            android:textAlignment="center"
+            android:textColor="@color/red"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/v2" />
+
+        <View
+            android:id="@+id/v3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/background_grey"
+            app:layout_constraintTop_toBottomOf="@+id/photos" />
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Delete"
+            android:textAlignment="center"
+            android:textColor="@color/red"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@+id/v3" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

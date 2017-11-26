@@ -45,4 +45,6 @@
     <color name="grey">#ff7c7b7b</color>
     <color name="light_grey">#ffd6d3d3</color>
     <color name="very_light_grey">#FFE4E0E0</color>
+    <color name="dark_grey">#807e7e</color>
+    <color name="background_grey">#f0eff5</color>
 </resources>

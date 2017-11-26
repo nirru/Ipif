@@ -58,6 +58,8 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxjava:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.mirrajabi:rx-contacts2:1.0'
+    compile 'com.github.marchinram:RxGallery:0.6.0'
+    compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
     compile 'com.hbb20:ccp:2.0.8'
 
     compile(
