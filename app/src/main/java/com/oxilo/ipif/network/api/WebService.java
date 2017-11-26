@@ -5,12 +5,17 @@ import com.oxilo.ipif.modal.Category;
 import com.oxilo.ipif.modal.products.BrandCategory;
 import com.oxilo.ipif.modal.products.Products;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -55,6 +60,13 @@ public interface WebService {
     @GET("ipif/index.php/api/get_products_detail")
     io.reactivex.Observable<Response<ResponseBody>> get_products_detail(
             @Query("product_id") String product_id);
+
+    @Headers("Accept: multipart/form-data")
+    @Multipart
+    @POST("ipif/index.php/api/userprofile")
+    io.reactivex.Observable<Response<ResponseBody>> uploadProfile(@Part MultipartBody.Part image,
+                                                     @Part("name") RequestBody name,
+                                                     @Part("user_id") RequestBody user_id);
 
 
 
