@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.oxilo.ipif.BaseDrawerActivity;
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.CategoryPagerAdapter;
@@ -44,6 +45,7 @@ public class MyAccountFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     public MyAccountFragment() {
@@ -91,7 +93,7 @@ public class MyAccountFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((MyAccountActivity)getActivity()).setUpDrawable(toolbar);
+        ((BaseDrawerActivity)getActivity()).setUpDrawable(toolbar);
 
     }
 
@@ -105,7 +107,6 @@ public class MyAccountFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        toolbar = (Toolbar)view.findViewById(R.id.toolbar);
         initPager();
     }
 

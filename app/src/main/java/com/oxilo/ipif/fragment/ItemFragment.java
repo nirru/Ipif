@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.oxilo.ipif.BaseDrawerActivity;
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.CategoryPagerAdapter;
@@ -150,7 +151,7 @@ public class ItemFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((MyAccountActivity) getActivity()).setUpDrawable(toolbar);
+        ((BaseDrawerActivity) getActivity()).setUpDrawable(toolbar);
 
     }
 

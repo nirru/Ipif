@@ -1,6 +1,10 @@
 package com.oxilo.ipif.fragment.brand;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -39,24 +44,27 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CategoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class CategoryFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     @BindView(R.id.recylerview)
     RecyclerView recylerview;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
     Unbinder unbinder;
-    @BindView(R.id.swipe_container)
-    SwipeRefreshLayout mSwipeRefreshLayout;
 
     CategoryListAdapter categoryListAdapter;
+    ArrayList<Service> services ;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -107,6 +115,7 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClassRefrence();
+        loadAllFromApi();
     }
 
     @Override
@@ -116,7 +125,8 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void initClassRefrence() {
-        categoryListAdapter = new CategoryListAdapter(R.layout.category_cell_row, loadDummy(),getContext());
+         services = new ArrayList<>();
+        categoryListAdapter = new CategoryListAdapter(R.layout.category_cell_row, services,getContext());
         LinearLayoutManager li1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
         li1.setSmoothScrollbarEnabled(true);
         recylerview.setLayoutManager(li1);
@@ -129,18 +139,18 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-        recylerview.addOnScrollListener(new EndlessRecyclerOnScrollListener(li1) {
-            @Override
-            public void onLoadMore(int current_page) {
-                recylerview.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        categoryListAdapter.addItem(null);
-                    }
-                });
-                loadAllFromApi();
-            }
-        });
+//        recylerview.addOnScrollListener(new EndlessRecyclerOnScrollListener(li1) {
+//            @Override
+//            public void onLoadMore(int current_page) {
+//                recylerview.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        categoryListAdapter.addItem(null);
+//                    }
+//                });
+//                loadAllFromApi();
+//            }
+//        });
 
         categoryListAdapter.setOnItemClickListener(new CategoryListAdapter.MyClickListener() {
             @Override
@@ -149,69 +159,45 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
-        // SwipeRefreshLayout
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
 
-//        /**
-//         * Showing Swipe Refresh animation on activity create
-//         * As animation won't start on onCreate, post runnable is used
-//         */
-//        mSwipeRefreshLayout.post(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                mSwipeRefreshLayout.setRefreshing(true);
-//                // Fetching data from server
-//                if (allListAdapter!=null){
-//                    allListAdapter.clearItem();
-//                    allListAdapter.notifyDataSetChanged();
-//                }
-//                loadAllFromApi();
-//            }
-//        });
     }
 
-    private ArrayList<Service> loadDummy(){
-        ArrayList<Service> services = new ArrayList<>();
-        try {
-            JSONObject mapping = new JSONObject(AppConstant.CATEGORY_LIST);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            services = mapper.readValue(mapping.getString("category_data"), new TypeReference<List<Service>>() {
-            });
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return services;
-    }
 
     private void loadAllFromApi() {
         try {
+            showProgress(true);
             WebService webService = ServiceFactory.createRetrofitService(WebService.class);
             webService.getCategory()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Category>() {
+                    .subscribe(new Consumer<Response<ResponseBody>>() {
                         @Override
-                        public void accept(@NonNull Category category) throws Exception {
-                            for (Service service : category.getCategoryData()) {
-                                categoryListAdapter.addItem(service);
+                        public void accept(@NonNull Response<ResponseBody> brand) throws Exception {
+                            try {
+                                showProgress(false);
+                                String sd = new String(brand.body().bytes());
+                                JSONObject mapping = new JSONObject(sd);
+                                ObjectMapper mapper = new ObjectMapper();
+                                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                                services = mapper.readValue(mapping.getString("category_data"), new TypeReference<List<Service>>() {
+                                });
+
+                                for (Service brandList : services) {
+                                    categoryListAdapter.addItem(brandList);
+                                }
+                                if (categoryListAdapter.dataSet.size() > 0 ) {
+                                    categoryListAdapter.removeItem(categoryListAdapter.dataSet.size() - 1);
+                                }
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
-                            if (categoryListAdapter.dataSet.size() > 0) {
-                                categoryListAdapter.removeItem(categoryListAdapter.dataSet.size() - 1);
-                            }
-                            mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(@NonNull Throwable throwable) throws Exception {
-                            mSwipeRefreshLayout.setRefreshing(false);
+                            showProgress(false);
                             throwable.printStackTrace();
                         }
                     });
@@ -220,9 +206,41 @@ public class CategoryFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-    @Override
-    public void onRefresh() {
+                recylerview.setVisibility(show ? View.GONE : View.VISIBLE);
+                recylerview.animate().setDuration(shortAnimTime).alpha(
+                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        recylerview.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
 
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                recylerview.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
+
 }

@@ -1,36 +1,34 @@
 package com.oxilo.ipif.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oxilo.ipif.BaseDrawerActivity;
+import com.oxilo.ipif.Data;
 import com.oxilo.ipif.NavigationController;
 import com.oxilo.ipif.R;
-import com.oxilo.ipif.adapter.brand.CategoryListAdapter;
 import com.oxilo.ipif.adapter.brand.ProductListAdapter;
-import com.oxilo.ipif.modal.Brand;
-import com.oxilo.ipif.modal.BrandList;
 import com.oxilo.ipif.modal.Service;
-import com.oxilo.ipif.modal.products.BrandCategoryList;
 import com.oxilo.ipif.modal.products.ProductListings;
-import com.oxilo.ipif.modal.products.Products;
 import com.oxilo.ipif.network.api.ServiceFactory;
 import com.oxilo.ipif.network.api.WebService;
-import com.oxilo.ipif.util.EndlessRecyclerOnScrollListener;
 
 import org.json.JSONObject;
 
@@ -63,13 +61,15 @@ public class ProductListing extends Fragment {
     @BindView(R.id.recylerview)
     RecyclerView recylerview;
     Unbinder unbinder;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     // TODO: Rename and change types of parameters
-    private String mParam1,mParam2;
+    private String mParam1, mParam2;
 
     private ProductListAdapter productListAdapter;
     private OnFragmentInteractionListener mListener;
-    private ArrayList<ProductListings>productListings;
+    private ArrayList<ProductListings> productListings;
 
 
     public ProductListing() {
@@ -85,10 +85,10 @@ public class ProductListing extends Fragment {
      * @return A new instance of fragment ServiceFragments.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProductListing newInstance(String param1, String  param2) {
+    public static ProductListing newInstance(String param1, String param2) {
         ProductListing fragment = new ProductListing();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1,  param1);
+        args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -118,6 +118,7 @@ public class ProductListing extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClassRefrence();
+        showProgress(true);
         loadAllFromApi(mParam1);
     }
 
@@ -167,12 +168,11 @@ public class ProductListing extends Fragment {
     }
 
     private void initClassRefrence() {
-        productListAdapter = new ProductListAdapter(R.layout.category_row, productListings,getContext());
-        LinearLayoutManager li1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
+        productListAdapter = new ProductListAdapter(R.layout.menu_row, productListings, getContext());
+        LinearLayoutManager li1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         li1.setSmoothScrollbarEnabled(true);
         recylerview.setLayoutManager(li1);
         recylerview.setAdapter(productListAdapter);
-
 
 
         productListAdapter.setOnItemClickListener(new ProductListAdapter.MyClickListener() {
@@ -187,9 +187,9 @@ public class ProductListing extends Fragment {
         });
     }
 
-    private ArrayList<Service> loadDummy(){
-        ArrayList<Service>services = new ArrayList<>();
-        for (int i = 0; i<12;i++){
+    private ArrayList<Service> loadDummy() {
+        ArrayList<Service> services = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
             Service service = new Service();
             service.setTitle("Shrimp Fondue");
             services.add(service);
@@ -207,15 +207,16 @@ public class ProductListing extends Fragment {
                         @Override
                         public void accept(@NonNull Response<ResponseBody> responseBodyResponse) throws Exception {
 
+                            showProgress(false);
                             try {
                                 String sd = new String(responseBodyResponse.body().bytes());
                                 JSONObject mapping = new JSONObject(sd);
                                 ObjectMapper mapper = new ObjectMapper();
                                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                                ArrayList<ProductListings>productListingses = mapper.readValue(mapping.getString("product_data"), new TypeReference<List<ProductListings>>() {
+                                ArrayList<ProductListings> productListingses = mapper.readValue(mapping.getString("product_data"), new TypeReference<List<ProductListings>>() {
                                 });
 //
-                                Log.e("SIZE==",""+ productListingses.size());
+                                Log.e("SIZE==", "" + productListingses.size());
                                 for (ProductListings productListings : productListingses) {
                                     productListAdapter.addItem(productListings);
                                 }
@@ -226,6 +227,7 @@ public class ProductListing extends Fragment {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(@NonNull Throwable throwable) throws Exception {
+                            showProgress(false);
                             throwable.printStackTrace();
                         }
                     });
@@ -234,11 +236,41 @@ public class ProductListing extends Fragment {
         }
     }
 
-    public void startFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_content, fragment);
-        fragmentTransaction.addToBackStack(null);/**Enable this in fragment call not in activity*/
-        fragmentTransaction.commit();
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+                recylerview.setVisibility(show ? View.GONE : View.VISIBLE);
+                recylerview.animate().setDuration(shortAnimTime).alpha(
+                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        recylerview.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
+
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                recylerview.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
+
 }

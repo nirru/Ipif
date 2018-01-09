@@ -18,6 +18,7 @@ package com.oxilo.ipif;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 
 
 import com.oxilo.ipif.activity.MyAccountActivity;
@@ -26,6 +27,7 @@ import com.oxilo.ipif.fragment.ItemFragment;
 import com.oxilo.ipif.fragment.MenuFragment;
 import com.oxilo.ipif.fragment.MyAccountFragment;
 import com.oxilo.ipif.fragment.ProductInfo;
+import com.oxilo.ipif.modal.login.UserData;
 
 
 /**
@@ -34,6 +36,11 @@ import com.oxilo.ipif.fragment.ProductInfo;
 public class NavigationController {
     private final int containerId;
     private final FragmentManager fragmentManager;
+
+    public NavigationController(AppCompatActivity mainActivity) {
+        this.containerId = R.id.main_content;
+        this.fragmentManager = mainActivity.getSupportFragmentManager();
+    }
 
     public NavigationController(BaseDrawerActivity mainActivity) {
         this.containerId = R.id.main_content;
@@ -89,6 +96,15 @@ public class NavigationController {
                 .hide(fragmentManager.findFragmentByTag(hide))
                 .add(containerId, fragment, tag)
                 .addToBackStack(null)
+                .commitAllowingStateLoss();
+    }
+
+    public void navigateToContact(UserData userData) {
+        String tag = "repo" + "/"  + "/" + "contact";
+        ContactsFragment fragment =  ContactsFragment.newInstance("","");
+        fragment.setUserData(userData);
+        fragmentManager.beginTransaction()
+                .replace(containerId, fragment,tag)
                 .commitAllowingStateLoss();
     }
 }

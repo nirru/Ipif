@@ -1,7 +1,11 @@
 package com.oxilo.ipif.fragment.brand;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -40,6 +45,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,21 +56,22 @@ import io.reactivex.schedulers.Schedulers;
  * Use the {@link LocationListing#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LocationListing extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class LocationListing extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     @BindView(R.id.recylerview)
     RecyclerView recylerview;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
     Unbinder unbinder;
-    @BindView(R.id.swipe_container)
-    SwipeRefreshLayout mSwipeRefreshLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1,mParam2;
 
     private LocationListAdapter locationListAdapter;
+    ArrayList<BrandList> brandLists;
 
 
     public LocationListing() {
@@ -111,6 +119,7 @@ public class LocationListing extends Fragment implements SwipeRefreshLayout.OnRe
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClassRefrence();
+        loadAllFromApi();
     }
 
 
@@ -121,10 +130,6 @@ public class LocationListing extends Fragment implements SwipeRefreshLayout.OnRe
         unbinder.unbind();
     }
 
-    @Override
-    public void onRefresh() {
-        loadAllFromApi();
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -142,25 +147,26 @@ public class LocationListing extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void initClassRefrence() {
-        locationListAdapter = new LocationListAdapter(R.layout.brand_row, loadDummy(), getContext());
+        brandLists = new ArrayList<>();
+        locationListAdapter = new LocationListAdapter(R.layout.brand_row, brandLists, getContext());
         LinearLayoutManager li1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         li1.setSmoothScrollbarEnabled(true);
         recylerview.setLayoutManager(li1);
         recylerview.setAdapter(locationListAdapter);
 
 
-        recylerview.addOnScrollListener(new EndlessRecyclerOnScrollListener(li1) {
-            @Override
-            public void onLoadMore(int current_page) {
-                recylerview.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        locationListAdapter.addItem(null);
-                    }
-                });
-                loadAllFromApi();
-            }
-        });
+//        recylerview.addOnScrollListener(new EndlessRecyclerOnScrollListener(li1) {
+//            @Override
+//            public void onLoadMore(int current_page) {
+//                recylerview.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        locationListAdapter.addItem(null);
+//                    }
+//                });
+//                loadAllFromApi();
+//            }
+//        });
 
         locationListAdapter.setOnItemClickListener(new LocationListAdapter.MyClickListener() {
             @Override
@@ -169,70 +175,45 @@ public class LocationListing extends Fragment implements SwipeRefreshLayout.OnRe
             }
         });
 
-        // SwipeRefreshLayout
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_orange_dark,
-                android.R.color.holo_blue_dark);
 
-//        /**
-//         * Showing Swipe Refresh animation on activity create
-//         * As animation won't start on onCreate, post runnable is used
-//         */
-//        mSwipeRefreshLayout.post(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                mSwipeRefreshLayout.setRefreshing(true);
-//                // Fetching data from server
-//                if (allListAdapter!=null){
-//                    allListAdapter.clearItem();
-//                    allListAdapter.notifyDataSetChanged();
-//                }
-//                loadAllFromApi();
-//            }
-//        });
 
     }
 
-    private ArrayList<BrandList> loadDummy() {
-        ArrayList<BrandList> services = new ArrayList<>();
-        try {
-            JSONObject mapping = new JSONObject(AppConstant.LOCATION);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            services = mapper.readValue(mapping.getString("brand_data"), new TypeReference<List<BrandList>>() {
-            });
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return services;
-    }
 
     private void loadAllFromApi() {
         try {
+            showProgress(true);
             WebService webService = ServiceFactory.createRetrofitService(WebService.class);
             webService.getBrandsByLocations("location","27.216981","77.489515","50")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Brand>() {
+                    .subscribe(new Consumer<Response<ResponseBody>>() {
                         @Override
-                        public void accept(@NonNull Brand brand) throws Exception {
-                            for (BrandList brandList : brand.getBrandData()) {
-                                locationListAdapter.addItem(brandList);
+                        public void accept(@NonNull Response<ResponseBody> brand) throws Exception {
+                            try {
+                                showProgress(false);
+                                String sd = new String(brand.body().bytes());
+                                JSONObject mapping = new JSONObject(sd);
+                                ObjectMapper mapper = new ObjectMapper();
+                                mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                                brandLists = mapper.readValue(mapping.getString("brand_data"), new TypeReference<List<BrandList>>() {
+                                });
+
+                                for (BrandList brandList : brandLists) {
+                                    locationListAdapter.addItem(brandList);
+                                }
+                                if (locationListAdapter.dataSet.size() > 0 ) {
+                                    locationListAdapter.removeItem(locationListAdapter.dataSet.size() - 1);
+                                }
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
-                            if (locationListAdapter.dataSet.size() > 0) {
-                                locationListAdapter.removeItem(locationListAdapter.dataSet.size() - 1);
-                            }
-                            mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(@NonNull Throwable throwable) throws Exception {
-                            mSwipeRefreshLayout.setRefreshing(false);
+                            showProgress(false);
                             throwable.printStackTrace();
                         }
                     });
@@ -247,6 +228,43 @@ public class LocationListing extends Fragment implements SwipeRefreshLayout.OnRe
         fragmentTransaction.replace(R.id.main_content, fragment);
         fragmentTransaction.addToBackStack(null);/**Enable this in fragment call not in activity*/
         fragmentTransaction.commit();
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+                recylerview.setVisibility(show ? View.GONE : View.VISIBLE);
+                recylerview.animate().setDuration(shortAnimTime).alpha(
+                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        recylerview.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
+
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                recylerview.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

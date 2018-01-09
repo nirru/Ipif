@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.oxilo.ipif.BaseDrawerActivity;
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.activity.MyAccountActivity;
 
@@ -79,7 +80,7 @@ public class ViewDetailFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ((MyAccountActivity)getActivity()).setUpDrawable(toolbar);
+        ((BaseDrawerActivity)getActivity()).setUpDrawable(toolbar);
 
     }
 }

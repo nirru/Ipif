@@ -1,5 +1,6 @@
 package com.oxilo.ipif.fragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -8,15 +9,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.oxilo.ipif.BaseDrawerActivity;
 import com.oxilo.ipif.R;
+import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.CartListAdapter;
 import com.oxilo.ipif.adapter.ContactsListAdapter;
 import com.oxilo.ipif.modal.Contacts;
+import com.oxilo.ipif.modal.login.UserData;
 import com.oxilo.ipif.util.HorizontalDividerItemDecoration;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,10 +60,19 @@ public class ContactsFragment extends Fragment {
 
     ArrayList<Contact> contactList;
 
+    UserData userData;
+
     private OnFragmentInteractionListener mListener;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     public ContactsFragment() {
         // Required empty public constructor
+    }
+
+    public void setUserData(UserData userData){
+        this.userData = userData;
     }
 
     /**
@@ -123,14 +139,28 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClassRefrence();
-        getContacts();
+        RxPermissions rxPermissions = new RxPermissions(getActivity());
+        rxPermissions
+                .request(Manifest.permission.READ_CONTACTS)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean granted) throws Exception {
+                        if (granted) { // Always true pre-M
+                            // I can control the camera now
+                            getContacts();
+                        } else {
+                            // Oups permission denied
+                            Toast.makeText(getActivity(),"app will not able to fetch contact",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
     }
 
     private void initClassRefrence() {
         contactList = new ArrayList<>();
                 contactsListAdapter = new ContactsListAdapter(R.layout.contacts_row,contactList,getContext());
         LinearLayoutManager ll1 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false);
-        ll1.setSmoothScrollbarEnabled(true);
         recyler_view.setLayoutManager(ll1);
 //        recyler_view.addItemDecoration(
 //                new HorizontalDividerItemDecoration.Builder(getContext())
@@ -148,22 +178,7 @@ public class ContactsFragment extends Fragment {
         });
     }
 
-//    private ArrayList<Contacts> loadDummyCart(){
-//        ArrayList<Contacts>cart = new ArrayList<>();
-//
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//        cart.add(new Contacts(R.drawable.circle_arrow,"User Name","+1-987654321"));
-//
-//        return cart;
-//    }
+
 
     private void getContacts(){
         RxContacts.fetch(getActivity())
@@ -179,8 +194,8 @@ public class ContactsFragment extends Fragment {
                         return contact.compareTo(other);
                     }
                 })
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Contact>>() {
                     @Override
                     public void accept(@NonNull List<Contact> contacts) throws Exception {
@@ -210,5 +225,11 @@ public class ContactsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+//        ((BaseDrawerActivity) getActivity()).setUpDrawable(toolbar);
     }
 }

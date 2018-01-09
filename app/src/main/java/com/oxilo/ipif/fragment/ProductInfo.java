@@ -6,10 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -19,8 +23,9 @@ import com.oxilo.ipif.BaseDrawerActivity;
 import com.oxilo.ipif.LoginActivity;
 import com.oxilo.ipif.NavigationController;
 import com.oxilo.ipif.R;
+import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.ImagePagerAdapter;
-import com.oxilo.ipif.modal.login.Login;
+import com.oxilo.ipif.modal.login.UserData;
 import com.oxilo.ipif.modal.productsdetail.AdditionImage;
 import com.oxilo.ipif.modal.productsdetail.ProductData;
 import com.oxilo.ipif.network.api.ServiceFactory;
@@ -54,11 +59,23 @@ public class ProductInfo extends Fragment {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     Unbinder unbinder;
+    @BindView(R.id.title)
+    TextView title;
+    @BindView(R.id.rating_bar)
+    RatingBar ratingBar;
+    @BindView(R.id.product_title)
+    TextView productTitle;
+    @BindView(R.id.price)
+    TextView price;
+    @BindView(R.id.product_desc)
+    TextView productDesc;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     public ProductInfo() {
         // Required empty public constructor
@@ -123,8 +140,8 @@ public class ProductInfo extends Fragment {
                                 ProductData productInfo = mapper.readValue(mapping.getString("product_data"), new TypeReference<ProductData>() {
                                 });
 //
-                                Log.e("SIZE==", "" + productInfo.getAdditionImage().size());
                                 initPager(productInfo.getAdditionImage());
+                                setData(productInfo);
 
                             } catch (Exception ex) {
                                 ex.printStackTrace();
@@ -141,6 +158,15 @@ public class ProductInfo extends Fragment {
         }
     }
 
+    private void setData(ProductData productInfo) {
+        if (productInfo!=null){
+            productTitle.setText(productInfo.getName());
+            price.setText("$" + productInfo.getPrice());
+            productDesc.setText(Html.fromHtml(productInfo.getLongDescription()));
+        }
+    }
+
+
     private void initPager(List<AdditionImage> additionImages) {
         ImagePagerAdapter imagePagerAdapter = new ImagePagerAdapter(getActivity(), additionImages);
         viewPager.setAdapter(imagePagerAdapter);
@@ -154,13 +180,20 @@ public class ProductInfo extends Fragment {
 
     @OnClick(R.id.send_gift)
     public void onViewClicked() {
-        Login login = ApplicationController.getInstance().getAppPrefs().getObject("LOGIN",Login.class);
-        if (login!=null){
+        UserData login = ApplicationController.getInstance().getAppPrefs().getObject("LOGIN", UserData.class);
+        if (login != null) {
             NavigationController navigationController = new NavigationController((BaseDrawerActivity) getActivity());
             navigationController.navigateToContact();
-        }else{
+        } else {
             Intent i = new Intent(getActivity(), LoginActivity.class);
             startActivity(i);
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((BaseDrawerActivity) getActivity()).setUpDrawable(toolbar);
+
     }
 }

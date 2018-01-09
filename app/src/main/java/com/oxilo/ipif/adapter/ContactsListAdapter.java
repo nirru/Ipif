@@ -125,7 +125,14 @@ public class ContactsListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.V
             final T dataItem = dataSet.get(position);
 
             ((ContactsListAdapter.EventViewHolder) holder).username.setText(((Contact)dataItem).getDisplayName());
-            ((ContactsListAdapter.EventViewHolder) holder).phone.setText("" + ((Contact)dataItem).getPhoneNumbers());
+            if (!((Contact)dataItem).getPhoneNumbers().toString().equals("")){
+                String string = ((Contact)dataItem).getPhoneNumbers().toString().replace("[","");
+                string = string.replace("]","");
+                ((ContactsListAdapter.EventViewHolder) holder).phone.setText(string);
+            }
+
+            else
+                ((ContactsListAdapter.EventViewHolder) holder).phone.setText("");
             if (((Contact)dataItem).getThumbnail()!=null)
             ((ContactsListAdapter.EventViewHolder) holder).profile_img.setImageURI(((Contact)dataItem).getThumbnail());
             else
@@ -156,13 +163,13 @@ public class ContactsListAdapter<T>  extends RecyclerView.Adapter<RecyclerView.V
     public static class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView username,phone;
-        public CircleImageView profile_img;
+        public ImageView profile_img;
 
         public EventViewHolder(View v) {
             super(v);
             username = (TextView)v.findViewById(R.id.username);
             phone = (TextView)v.findViewById(R.id.phone);
-            profile_img = (CircleImageView) v.findViewById(R.id.profile_img);
+            profile_img = (ImageView) v.findViewById(R.id.profile_img);
             v.setOnClickListener(this);
         }
 

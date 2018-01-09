@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.oxilo.ipif.R;
@@ -29,7 +31,6 @@ public class ProductListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vie
     public List<T> dataSet;
     private static MyClickListener myClickListener;
     private int inflated_row;
-    TextView price;
 
     public ProductListAdapter(int inflated_row, List<T> productLists, Context mContext) {
         this.mContext = mContext;
@@ -154,7 +155,7 @@ public class ProductListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vie
        ((EventViewHolder) holder).product_title.setText(((ProductListings)dataItem).getName());
        ((EventViewHolder) holder).product_desc.setText(((ProductListings)dataItem).getLongDescription());
        String img_url = ((ProductListings)dataItem).getImageUrl();
-            if (!img_url.equalsIgnoreCase(""))
+            if (!img_url.equalsIgnoreCase("") && img_url !=null)
                 Picasso.with(mContext).load(img_url).placeholder(R.drawable.logo)// Place holder image from drawable folder
                         .error(R.drawable.logo).fit().centerInside()
                         .into(((EventViewHolder) holder).product_image);
@@ -185,12 +186,14 @@ public class ProductListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vie
 
         public ImageView product_image;
         public TextView product_title,product_desc;
+        public LinearLayout ll1;
         public EventViewHolder(View v) {
             super(v);
-            product_image = (ImageView) v.findViewById(R.id.cat_image);
+            product_image = (ImageView) v.findViewById(R.id.image);
             product_title = (TextView) v.findViewById(R.id.header);
             product_desc = (TextView) v.findViewById(R.id.desc);
-            v.setOnClickListener(this);
+            ll1 = (LinearLayout) v.findViewById(R.id.rl_l);
+            ll1.setOnClickListener(this);
         }
 
         @Override

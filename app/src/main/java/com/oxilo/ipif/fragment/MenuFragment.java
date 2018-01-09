@@ -1,7 +1,11 @@
 package com.oxilo.ipif.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -12,17 +16,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oxilo.ipif.BaseDrawerActivity;
+import com.oxilo.ipif.Data;
 import com.oxilo.ipif.R;
 import com.oxilo.ipif.activity.MyAccountActivity;
 import com.oxilo.ipif.adapter.CategoryPagerAdapter;
-import com.oxilo.ipif.modal.Brand;
-import com.oxilo.ipif.modal.BrandList;
-import com.oxilo.ipif.modal.Category;
-import com.oxilo.ipif.modal.products.BrandCategory;
 import com.oxilo.ipif.modal.products.BrandCategoryList;
 import com.oxilo.ipif.network.api.ServiceFactory;
 import com.oxilo.ipif.network.api.WebService;
@@ -51,7 +55,7 @@ import retrofit2.Response;
  * Use the {@link MenuFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MenuFragment extends Fragment {
+public class MenuFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,6 +67,10 @@ public class MenuFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.main_l)
+    LinearLayout mainL;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
     // TODO: Rename and change types of parameters
     private String cat_id, mParam2;
 
@@ -111,6 +119,7 @@ public class MenuFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        showProgress(true);
         loadCategoryFromApi();
     }
 
@@ -163,7 +172,7 @@ public class MenuFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((MyAccountActivity) getActivity()).setUpDrawable(toolbar);
+        ((BaseDrawerActivity) getActivity()).setUpDrawable(toolbar);
 
     }
 
@@ -192,16 +201,14 @@ public class MenuFragment extends Fragment {
                     .subscribe(new Consumer<Response<ResponseBody>>() {
                         @Override
                         public void accept(@NonNull Response<ResponseBody> responseBodyResponse) throws Exception {
-
+                            showProgress(false);
                             try {
                                 String sd = new String(responseBodyResponse.body().bytes());
                                 JSONObject mapping = new JSONObject(sd);
                                 ObjectMapper mapper = new ObjectMapper();
                                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                                ArrayList<BrandCategoryList>brandCategoryLists = mapper.readValue(mapping.getString("brand_categorys"), new TypeReference<List<BrandCategoryList>>() {
+                                ArrayList<BrandCategoryList> brandCategoryLists = mapper.readValue(mapping.getString("brand_categorys"), new TypeReference<List<BrandCategoryList>>() {
                                 });
-//
-                                Log.e("SIZE==",""+ brandCategoryLists.size());
                                 initPager(brandCategoryLists);
 
                             } catch (Exception ex) {
@@ -211,6 +218,7 @@ public class MenuFragment extends Fragment {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(@NonNull Throwable throwable) throws Exception {
+                            showProgress(false);
                             throwable.printStackTrace();
                         }
                     });
@@ -219,28 +227,44 @@ public class MenuFragment extends Fragment {
         }
     }
 
-    private ArrayList<Category> loadDummyCategory() {
-        ArrayList<Category> categories = new ArrayList<>();
-        Category category1 = new Category();
-        Category categor2 = new Category();
-        Category categor3 = new Category();
-        Category categor4 = new Category();
-        Category categor5 = new Category();
 
-        category1.setTitle("Fruits");
-        categor2.setTitle("Drinks");
-        categor3.setTitle("Eat");
-        categor4.setTitle("Lunch");
-        categor5.setTitle("Vegetarian");
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        categories.add(category1);
-        categories.add(categor2);
-        categories.add(categor3);
-        categories.add(categor4);
-        categories.add(categor5);
+                mainL.setVisibility(show ? View.GONE : View.VISIBLE);
+                mainL.animate().setDuration(shortAnimTime).alpha(
+                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mainL.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
 
-        return categories;
-
-
+                progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                mainL.setVisibility(show ? View.VISIBLE : View.GONE);
+                progressBar.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
